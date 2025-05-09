@@ -1799,13 +1799,164 @@
     });
 
     // Intersection Observer for fade-in sections
-    document.addEventListener('DOMContentLoaded', function() {
-      const fadeInSections = document.querySelectorAll('.fade-in-section');
-      
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      }, { threshold: 0.1 });
+    document.addEventListener("DOMContentLoaded", () => {
+      const fadeInSections = document.querySelectorAll(".fade-in-section")
+
+      const observer = new IntersectionObserver(
+      (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible")
+        }
+      })
+    },
+    { threshold: 0.1 },
+  )
+
+  fadeInSections.forEach((section) => {
+    observer.observe(section)
+  })
+})
+
+// Circular progress component
+document.addEventListener("DOMContentLoaded", () => {
+  const circularProgressElements = document.querySelectorAll(".circular-progress")
+
+  circularProgressElements.forEach((element) => {
+    const percentage = element.getAttribute("data-percentage")
+    const label = element.getAttribute("data-label")
+    const radius = 40
+    const circumference = 2 * Math.PI * radius
+    const offset = circumference - (percentage / 100) * circumference
+
+    element.innerHTML = `
+      <div class="flex flex-col items-center">
+        <div class="relative w-24 h-24">
+          <svg class="w-full h-full" viewBox="0 0 100 100">
+            <circle
+              class="text-zinc-800"
+              stroke-width="8"
+              stroke="currentColor"
+              fill="transparent"
+              r="${radius}"
+              cx="50"
+              cy="50"
+            />
+            <circle
+              class="text-emerald-500"
+              stroke-width="8"
+              stroke-dasharray="${circumference}"
+              stroke-dashoffset="${offset}"
+              stroke-linecap="round"
+              stroke="currentColor"
+              fill="transparent"
+              r="${radius}"
+              cx="50"
+              cy="50"
+              style="transition: stroke-dashoffset 0.5s ease; transform: rotate(-90deg); transform-origin: 50% 50%;"
+            />
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-xl font-bold">${percentage}%</div>
+        </div>
+        <div class="mt-2 text-sm font-medium">${label}</div>
+      </div>
+    `
+  })
+})
+
+// Currency cycling
+document.addEventListener("DOMContentLoaded", () => {
+  const currencyDisplay = document.getElementById("currency-display")
+  const currencies = ["$", "€", "£"]
+  let currencyIndex = 0
+
+  setInterval(() => {
+    currencyIndex = (currencyIndex + 1) % currencies.length
+    currencyDisplay.textContent = `0${currencies[currencyIndex]}`
+  }, 1000)
+})
+
+// Tabs functionality
+document.addEventListener("DOMContentLoaded", () => {
+  const tabTriggers = document.querySelectorAll(".tab-trigger")
+  const tabContents = document.querySelectorAll(".tab-content")
+
+  tabTriggers.forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      const tabName = trigger.getAttribute("data-tab")
+
+      // Hide all tab contents
+      tabContents.forEach((content) => {
+        content.classList.remove("active")
+      })
+
+      // Deactivate all triggers
+      tabTriggers.forEach((t) => {
+        t.classList.remove("active")
+      })
+
+      // Activate the clicked tab
+      trigger.classList.add("active")
+      document.querySelector(`.tab-content[data-tab="${tabName}"]`).classList.add("active")
+    })
+  })
+})
+
+// Scroll button functionality
+document.addEventListener("DOMContentLoaded", () => {
+  const scrollButton = document.getElementById("scrollButton")
+
+  if (scrollButton) {
+    scrollButton.addEventListener("click", () => {
+      window.scrollTo({
+        top: window.innerHeight,
+        behavior: "smooth",
+      })
+    })
+  }
+})
+
+// Add smooth scrolling for all anchor links
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault()
+
+      const targetId = this.getAttribute("href")
+      if (targetId === "#") return
+
+      const targetElement = document.querySelector(targetId)
+      if (targetElement) {
+        window.scrollTo({
+          top: targetElement.offsetTop - 80, // Offset for fixed header
+          behavior: "smooth",
+        })
+      }
+    })
+  })
+})
+
+// Add animation to the hero section
+document.addEventListener("DOMContentLoaded", () => {
+  const heroSection = document.querySelector("section")
+  if (heroSection) {
+    setTimeout(() => {
+      const fadeInElements = heroSection.querySelectorAll(".fade-in-section")
+      fadeInElements.forEach((element) => {
+        element.classList.add("visible")
+      })
+    }, 300)
+  }
+})
+
+// Mobile menu toggle (if needed)
+document.addEventListener("DOMContentLoaded", () => {
+  const mobileMenuButton = document.querySelector(".mobile-menu-button")
+  const mobileMenu = document.querySelector(".mobile-menu")
+
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden")
+    })
+  }
+})
