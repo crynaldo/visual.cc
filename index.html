@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visual - Next Generation Script Execution</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Base styles */
+    :root {
+      --background: 240 10% 3.9%;
+      --foreground: 0 0% 98%;
+      --card: 240 10% 3.9%;
+      --card-foreground: 0 0% 98%;
+      --popover: 240 10% 3.9%;
+      --popover-foreground: 0 0% 98%;
+      --primary: 160 84% 39%;
+      --primary-foreground: 240 5.9% 10%;
+      --secondary: 240 3.7% 15.9%;
+      --secondary-foreground: 0 0% 98%;
+      --muted: 240 3.7% 15.9%;
+      --muted-foreground: 240 5% 64.9%;
+      --accent: 240 3.7% 15.9%;
+      --accent-foreground: 0 0% 98%;
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 240 3.7% 15.9%;
+      --input: 240 3.7% 15.9%;
+      --ring: 160 84% 39%;
+      --radius: 0.5rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+        "Helvetica Neue", sans-serif;
+      background-color: hsl(240, 10%, 3.9%);
+      color: hsl(0, 0%, 98%);
+      line-height: 1.5;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Utility classes */
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-1 { gap: 0.25rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-4 { gap: 1rem; }
+    .gap-6 { gap: 1.5rem; }
+    .gap-8 { gap: 2rem; }
+    .gap-12 { gap: 3rem; }
+    .gap-16 { gap: 4rem; }
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .max-w-3xl { max-width: 48rem; }
+    .max-w-4xl { max-width: 56rem; }
+    .max-w-lg { max-width: 32rem; }
+    .max-w-md { max-width: 28rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-3 { margin-bottom: 0.75rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .mb-8 { margin-bottom: 2rem; }
+    .mb-10 { margin-bottom: 2.5rem; }
+    .mb-12 { margin-bottom: 3rem; }
+    .mb-16 { margin-bottom: 4rem; }
+    .ml-1 { margin-left: 0.25rem; }
+    .ml-2 { margin-left: 0.5rem; }
+    .mr-1 { margin-right: 0.25rem; }
+    .mr-2 { margin-right: 0.5rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-8 { margin-top: 2rem; }
+    .mt-12 { margin-top: 3rem; }
+    .mt-16 { margin-top: 4rem; }
+    .mt-24 { margin-top: 6rem; }
+    .p-1 { padding: 0.25rem; }
+    .p-2 { padding: 0.5rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .p-6 { padding: 1.5rem; }
+    .p-8 { padding: 2rem; }
+    .p-12 { padding: 3rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .px-8 { padding-left: 2rem; padding-right: 2rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+    .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+    .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+    .py-24 { padding-top: 6rem; padding-bottom: 6rem; }
+    .pt-8 { padding-top: 2rem; }
+    .pt-16 { padding-top: 4rem; }
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .text-xs { font-size: 0.75rem; }
+    .text-sm { font-size: 0.875rem; }
+    .text-lg { font-size: 1.125rem; }
+    .text-xl { font-size: 1.25rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .text-3xl { font-size: 1.875rem; }
+    .text-4xl { font-size: 2.25rem; }
+    .text-5xl { font-size: 3rem; }
+    .text-6xl { font-size: 3.75rem; }
+    .text-7xl { font-size: 4.5rem; }
+    .text-8xl { font-size: 6rem; }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .tracking-tight { letter-spacing: -0.025em; }
+    .leading-tight { line-height: 1.25; }
+    .leading-relaxed { line-height: 1.625; }
+    .text-white { color: white; }
+    .text-zinc-300 { color: rgb(212, 212, 216); }
+    .text-zinc-400 { color: rgb(161, 161, 170); }
+    .text-zinc-500 { color: rgb(113, 113, 122); }
+    .text-zinc-600 { color: rgb(82, 82, 91); }
+    .text-emerald-400 { color: rgb(52, 211, 153); }
+    .text-teal-400 { color: rgb(45, 212, 191); }
+    .text-green-400 { color: rgb(74, 222, 128); }
+    .text-blue-400 { color: rgb(96, 165, 250); }
+    .text-yellow-400 { color: rgb(250, 204, 21); }
+    .text-red-500 { color: rgb(239, 68, 68); }
+    .text-indigo-100 { color: rgb(224, 231, 255); }
+    .bg-black { background-color: black; }
+    .bg-black\/50 { background-color: rgba(0, 0, 0, 0.5); }
+    .bg-zinc-900 { background-color: rgb(24, 24, 27); }
+    .bg-zinc-950 { background-color: rgb(9, 9, 11); }
+    .bg-zinc-950\/50 { background-color: rgba(9, 9, 11, 0.5); }
+    .bg-emerald-500\/5 { background-color: rgba(16, 185, 129, 0.05); }
+    .bg-emerald-500\/10 { background-color: rgba(16, 185, 129, 0.1); }
+    .bg-emerald-500\/20 { background-color: rgba(16, 185, 129, 0.2); }
+    .bg-teal-500\/10 { background-color: rgba(20, 184, 166, 0.1); }
+    .bg-green-500\/10 { background-color: rgba(34, 197, 94, 0.1); }
+    .bg-white\/5 { background-color: rgba(255, 255, 255, 0.05); }
+    .bg-white\/10 { background-color: rgba(255, 255, 255, 0.1); }
+    .bg-red-500 { background-color: rgb(239, 68, 68); }
+    .bg-yellow-500 { background-color: rgb(234, 179, 8); }
+    .bg-green-500 { background-color: rgb(34, 197, 94); }
+    .border { border-width: 1px; border-style: solid; }
+    .border-t { border-top-width: 1px; border-top-style: solid; }
+    .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+    .border-zinc-700 { border-color: rgb(63, 63, 70); }
+    .border-zinc-800 { border-color: rgb(39, 39, 42); }
+    .border-zinc-800\/50 { border-color: rgba(39, 39, 42, 0.5); }
+    .border-emerald-500\/20 { border-color: rgba(16, 185, 129, 0.2); }
+    .border-emerald-500\/30 { border-color: rgba(16, 185, 129, 0.3); }
+    .border-white\/10 { border-color: rgba(255, 255, 255, 0.1); }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+    .shadow-emerald-900\/20 { box-shadow: 0 0 20px rgba(6, 78, 59, 0.2); }
+    .shadow-violet-900\/20 { box-shadow: 0 0 20px rgba(76, 29, 149, 0.2); }
+    .blur-lg { filter: blur(16px); }
+    .blur-3xl { filter: blur(64px); }
+    .backdrop-blur-xl { backdrop-filter: blur(24px); }
+    .backdrop-blur-sm { backdrop-filter: blur(4px); }
+    .opacity-10 { opacity: 0.1; }
+    .opacity-20 { opacity: 0.2; }
+    .opacity-30 { opacity: 0.3; }
+    .opacity-40 { opacity: 0.4; }
+    .opacity-50 { opacity: 0.5; }
+    .opacity-70 { opacity: 0.7; }
+    .opacity-75 { opacity: 0.75; }
+    .z-10 { z-index: 10; }
+    .z-50 { z-index: 50; }
+    .overflow-hidden { overflow: hidden; }
+    .overflow-x-auto { overflow-x: auto; }
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .fixed { position: fixed; }
+    .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+    .inset-0\.5 { top: 0.125rem; right: 0.125rem; bottom: 0.125rem; left: 0.125rem; }
+    .top-0 { top: 0; }
+    .left-0 { left: 0; }
+    .right-0 { right: 0; }
+    .bottom-0 { bottom: 0; }
+    .bottom-2 { bottom: 0.5rem; }
+    .left-2 { left: 0.5rem; }
+    .right-2 { right: 0.5rem; }
+    .top-1\/2 { top: 50%; }
+    .left-1\/2 { left: 50%; }
+    .top-1\/4 { top: 25%; }
+    .left-1\/4 { left: 25%; }
+    .top-2\/3 { top: 66.666667%; }
+    .right-1\/4 { right: 25%; }
+    .bottom-1\/4 { bottom: 25%; }
+    .left-1\/3 { left: 33.333333%; }
+    .top-\[15\%\] { top: 15%; }
+    .right-\[10\%\] { right: 10%; }
+    .bottom-\[25\%\] { bottom: 25%; }
+    .left-\[15\%\] { left: 15%; }
+    .top-\[40\%\] { top: 40%; }
+    .left-\[8\%\] { left: 8%; }
+    .bottom-\[30\%\] { bottom: 30%; }
+    .right-\[12\%\] { right: 12%; }
+    .top-\[60\%\] { top: 60%; }
+    .right-\[20\%\] { right: 20%; }
+    .-translate-x-1\/2 { transform: translateX(-50%); }
+    .-translate-y-1\/2 { transform: translateY(-50%); }
+    .translate-x-1\/2 { transform: translateX(50%); }
+    .translate-y-1\/2 { transform: translateY(50%); }
+    .rotate-45 { transform: rotate(45deg); }
+    .transform { transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)); }
+    .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transition-transform { transition-property: transform; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .duration-300 { transition-duration: 300ms; }
+    .duration-500 { transition-duration: 500ms; }
+    .ease-in-out { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+    .hover\:text-white:hover { color: white; }
+    .hover\:bg-white\/10:hover { background-color: rgba(255, 255, 255, 0.1); }
+    .hover\:border-emerald-500\/30:hover { border-color: rgba(16, 185, 129, 0.3); }
+    .hover\:scale-105:hover { transform: scale(1.05); }
+    .hover\:scale-110:hover { transform: scale(1.1); }
+    .group:hover .group-hover\:scale-105 { transform: scale(1.05); }
+    .group:hover .group-hover\:scale-110 { transform: scale(1.1); }
+    .group:hover .group-hover\:text-gradient { background-clip: text; color: transparent; background-image: linear-gradient(to right, rgb(52, 211, 153), rgb(45, 212, 191), rgb(74, 222, 128)); }
+    .group:hover .group-hover\:opacity-100 { opacity: 1; }
+    .group:hover .group-hover\:text-6xl { font-size: 3.75rem; }
+
+    /* Grid */
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    @media (min-width: 768px) {
+      .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .md\:flex { display: flex; }
+      .md\:flex-row { flex-direction: row; }
+      .md\:mb-0 { margin-bottom: 0; }
+      .md\:text-xl { font-size: 1.25rem; }
+      .md\:text-2xl { font-size: 1.5rem; }
+      .md\:text-3xl { font-size: 1.875rem; }
+      .md\:text-4xl { font-size: 2.25rem; }
+      .md\:text-5xl { font-size: 3rem; }
+      .md\:text-7xl { font-size: 4.5rem; }
+    }
+
+    @media (min-width: 1024px) {
+      .lg\:flex-row { flex-direction: row; }
+      .lg\:w-1\/2 { width: 50%; }
+      .lg\:w-auto { width: auto; }
+      .lg\:mb-6 { margin-bottom: 1.5rem; }
+      .lg\:p-12 { padding: 3rem; }
+      .lg\:p-16 { padding: 4rem; }
+      .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .lg\:text-8xl { font-size: 6rem; }
+    }
+
+    /* Modern design elements */
+    .glass-effect {
+      background-color: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .glass-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-gradient {
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      background-image: linear-gradient(to right, rgb(52, 211, 153), rgb(45, 212, 191), rgb(74, 222, 128));
+    }
+
+    .text-gradient-white {
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      background-image: linear-gradient(to bottom, white, rgba(255, 255, 255, 0.7));
+    }
+
+    .animated-gradient {
+      background: linear-gradient(-45deg, #00ffa2, #00d9ff, #00a2ff, #00ffd0);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+
+    .animated-border {
+      position: relative;
+    }
+
+    .animated-border::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(45deg, #00ffa2, #00d9ff, #00a2ff, #00ffd0);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .hero-glow {
+      width: 800px;
+      height: 800px;
+      border-radius: 100%;
+      background: radial-gradient(circle, rgba(0, 255, 170, 0.15) 0%, rgba(0, 255, 170, 0) 70%);
+      filter: blur(50px);
+      z-index: 0;
+    }
+
+    .hero-glow-2 {
+      width: 600px;
+      height: 600px;
+      border-radius: 100%;
+      background: radial-gradient(circle, rgba(0, 210, 255, 0.1) 0%, rgba(0, 210, 255, 0) 70%);
+      filter: blur(50px);
+      z-index: 0;
+    }
+
+    .hero-glow-3 {
+      width: 400px;
+      height: 400px;
+      border-radius: 100%;
+      background: radial-gradient(circle, rgba(255, 0, 170, 0.05) 0%, rgba(255, 0, 170, 0) 70%);
+      filter: blur(50px);
+      z-index: 0;
+    }
+
+    .hero-line {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 170, 0.2), transparent);
+    }
+
+    .floating {
+      animation: floating 3s ease-in-out infinite;
+    }
+
+    .floating-slow {
+      animation: floating 6s ease-in-out infinite;
+    }
+
+    .floating-slower {
+      animation: floating 9s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .noise-bg {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.05;
+    }
+
+    .hero-bg {
+      background: radial-gradient(circle at 20% 20%, rgba(0, 255, 170, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 30%, rgba(0, 210, 255, 0.1), transparent 50%),
+        radial-gradient(circle at 40% 70%, rgba(255, 0, 170, 0.05), transparent 40%);
+    }
+
+    .glow-text {
+      text-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+    }
+
+    .glow-button {
+      box-shadow: 0 0 20px rgba(0, 255, 170, 0.3);
+    }
+
+    .hexagon-bg {
+      background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2l9 4.9v10.2L12 22l-9-4.9V6.9L12 2zm0 2.3L5 8.3v7.4l7 3.8 7-3.8V8.3l-7-4z' fill='rgba(0, 255, 170, 0.05)' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+
+    .pattern-grid {
+      background-image: linear-gradient(to right, rgba(0, 255, 170, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 255, 170, 0.05) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .pattern-dots {
+      background-image: radial-gradient(rgba(0, 255, 170, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .bg-grid-white\/10 {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.1)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+    }
+
+    /* Code window */
+    .code-window {
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .code-window-header {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background: rgba(30, 30, 30, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .code-window-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .code-window-content {
+      background: rgba(20, 20, 20, 0.8);
+      padding: 1rem;
+      font-family: monospace;
+      color: #e0e0e0;
+      overflow-x: auto;
+    }
+
+    .code-comment { color: #6a9955; }
+    .code-keyword { color: #569cd6; }
+    .code-string { color: #ce9178; }
+    .code-function { color: #dcdcaa; }
+    .code-variable { color: #9cdcfe; }
+    .code-number { color: #b5cea8; }
+    .code-operator { color: #d4d4d4; }
+    .code-property { color: #9cdcfe; }
+    .code-punctuation { color: #d4d4d4; }
+
+    /* Buttons */
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .primary-button {
+      background: linear-gradient(to right, rgb(124, 58, 237), rgb(99, 102, 241));
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+    }
+
+    .primary-button:hover {
+      background: linear-gradient(to right, rgb(109, 40, 217), rgb(79, 70, 229));
+    }
+
+    .primary-gradient-button {
+      background: linear-gradient(to right, rgb(16, 185, 129), rgb(20, 184, 166));
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+    }
+
+    .primary-gradient-button:hover {
+      background: linear-gradient(to right, rgb(5, 150, 105), rgb(15, 118, 110));
+    }
+
+    .outline-button {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 1rem;
+    }
+
+    .outline-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .ghost-button {
+      background: transparent;
+      color: rgb(161, 161, 170);
+      border: none;
+      padding: 0.5rem 1rem;
+    }
+
+    .ghost-button:hover {
+      color: white;
+    }
+
+    .white-button {
+      background: white;
+      color: rgb(16, 185, 129);
+      border: none;
+      padding: 0.5rem 1rem;
+    }
+
+    .white-button:hover {
+      background: rgb(243, 244, 246);
+    }
+
+    .outline-light-button {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.5rem 1rem;
+    }
+
+    .outline-light-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .emerald-button {
+      background: rgba(16, 185, 129, 0.2);
+      color: rgb(52, 211, 153);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 0.5rem 1rem;
+    }
+
+    .emerald-button:hover {
+      background: rgba(16, 185, 129, 0.3);
+    }
+
+    .teal-button {
+      background: rgba(20, 184, 166, 0.2);
+      color: rgb(45, 212, 191);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+      padding: 0.5rem 1rem;
+    }
+
+    .teal-button:hover {
+      background: rgba(20, 184, 166, 0.3);
+    }
+
+    .blue-button {
+      background: rgba(59, 130, 246, 0.2);
+      color: rgb(96, 165, 250);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.5rem 1rem;
+    }
+
+    .blue-button:hover {
+      background: rgba(59, 130, 246, 0.3);
+    }
+
+    /* Tabs */
+    .tabs-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
+    }
+
+    .tab-trigger {
+      padding: 0.5rem;
+      text-align: center;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tab-trigger.active {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: rgb(52, 211, 153);
+    }
+
+    .tab-content {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Aspect ratio */
+    .aspect-video {
+      aspect-ratio: 16 / 9;
+    }
+
+    /* Fade in section */
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .fade-in-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hidden { display: none; }
+      .container { padding: 0 1rem; }
+      .flex-col { flex-direction: column; }
+      .sm\:flex-row { flex-direction: row; }
+      .min-h-screen { min-height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen bg-gradient-to-b from-zinc-950 via-black to-zinc-950">
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800/50 backdrop-blur-xl bg-black/50">
+      <div class="container flex h-16 items-center justify-between">
+        <div class="flex items-center gap-6">
+          <a href="/" class="flex items-center gap-2">
+            <div class="relative h-8 w-8">
+              <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-300 blur-sm opacity-70"></div>
+              <div class="absolute inset-0.5 rounded-full bg-black"></div>
+              <svg class="absolute inset-0 h-8 w-8 text-emerald-400 p-1.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <span class="font-bold text-xl tracking-tight">VISUAL</span>
+          </a>
+          <nav class="hidden md:flex items-center gap-6">
+            <a href="#features" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+              Features
+            </a>
+            <a href="#showcase" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+              Showcase
+            </a>
+            <a
+              href="https://discord.gg/zZ8vjEfEzm"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              Discord
+            </a>
+          </nav>
+        </div>
+        <div class="flex items-center gap-4">
+          <button class="button primary-button gap-2 rounded-full px-6 shadow-lg shadow-violet-900/20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+              <path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5-.3.3-.5.7-.5 1.1v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8c.4 0 .8-.2 1.1-.5.3-.3.5-.7.5-1.1V6.5L15.5 2z"></path>
+              <path d="M3 7.6v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8"></path>
+              <path d="M15 2v5h5"></path>
+            </svg>
+            Get Started
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section with Modern Background -->
+    <section class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden" style="perspective: 1000px;">
+      <!-- Animated Background -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="hero-bg"></div>
+        <div class="noise-bg"></div>
+        
+        <!-- Animated lines -->
+        <div class="hero-line" style="top: 20%; animation-delay: 0s; opacity: 0.5;"></div>
+        <div class="hero-line" style="top: 35%; animation-delay: 0.5s; opacity: 0.4;"></div>
+        <div class="hero-line" style="top: 50%; animation-delay: 1s; opacity: 0.3;"></div>
+        <div class="hero-line" style="top: 65%; animation-delay: 1.5s; opacity: 0.2;"></div>
+        <div class="hero-line" style="top: 80%; animation-delay: 2s; opacity: 0.1;"></div>
+        
+        <!-- Glowing orbs -->
+        <div class="hero-glow absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="hero-glow-2 absolute top-2/3 right-1/4 translate-x-1/2 -translate-y-1/2"></div>
+        <div class="hero-glow-3 absolute bottom-1/4 left-1/3 -translate-x-1/2 translate-y-1/2"></div>
+      </div>
+
+      <!-- Floating Elements -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <!-- Code snippets -->
+        <div class="absolute top-[15%] right-[10%] glass-effect p-3 rounded-lg opacity-30 floating-slow">
+          <div class="text-xs font-mono text-emerald-400">function execute() { ... }</div>
+        </div>
+        
+        <div class="absolute bottom-[25%] left-[15%] glass-effect p-3 rounded-lg opacity-20 floating">
+          <div class="text-xs font-mono text-blue-400">const visual = require('visual');</div>
+        </div>
+        
+        <!-- Geometric shapes -->
+        <div class="absolute top-[40%] left-[8%] w-8 h-8 border border-emerald-500/20 rounded-full opacity-40 floating-slower"></div>
+        <div class="absolute bottom-[30%] right-[12%] w-12 h-12 border border-teal-500/20 rounded-lg opacity-30 floating-slow"></div>
+        <div class="absolute top-[60%] right-[20%] w-6 h-6 border border-blue-500/20 rotate-45 opacity-20 floating"></div>
+      </div>
+
+      <div class="container relative z-10">
+        <div class="fade-in-section">
+          <div class="flex flex-col items-center justify-center text-center">
+            <div class="relative mb-8">
+              <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 opacity-75 blur-lg"></div>
+              <div class="relative bg-black rounded-full p-1 border border-emerald-500/20 animated-border">
+                <div class="relative w-20 h-20">
+                  <svg class="w-20 h-20 text-emerald-400 p-3 relative z-10" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <div class="inline-flex items-center px-4 py-1.5 mb-6 rounded-full glass-effect">
+              <span class="text-xs font-medium text-emerald-400 mr-2">Next Generation Executor</span>
+              <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-gradient-white tracking-tight leading-tight">
+              Welcome to the <br />
+              <span class="text-gradient glow-text">Future</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto mb-10 leading-relaxed">
+              Visual isn't just another executor—it's a
+              <span class="text-emerald-400 font-semibold">revolution</span> in script execution technology.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 mb-16">
+              <a href="data:text/plain;charset=utf-8,# Visual Script Executor%0A%0AThank you for downloading Visual, the next generation script execution platform for Roblox!%0A%0A## Features%0A%0A- Instant execution (0ms)%0A- 100% game compatibility%0A- Undetectable bypass technology%0A- Extensive script library (10,000+ scripts)%0A- Auto-update system%0A- 24/7 support%0A%0A## Getting Started%0A%0A1. Extract the contents of this package%0A2. Run Visual.exe as administrator%0A3. Select a script from our library or paste your own%0A4. Click %22Execute%22 to run your script instantly%0A%0A## Support%0A%0AJoin our Discord community: https://discord.gg/zZ8vjEfEzm%0A%0A## Legal Notice%0A%0AThis software is for educational purposes only. The developers are not responsible for any misuse of this software.%0A%0A© 2023 Visual. All rights reserved." download="visual-executor.txt" class="button primary-gradient-button gap-2 rounded-full px-8 py-6 text-lg shadow-lg shadow-emerald-900/20 glow-button">
+                Download Now
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </a>
+              <button class="button outline-button gap-2 bg-white/5 hover:bg-white/10 border-white/10 rounded-full px-8 py-6 text-lg backdrop-blur-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Join Discord
+              </button>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-8 max-w-3xl w-full mb-12">
+              <div class="flex flex-col items-center p-6 rounded-2xl glass-card backdrop-blur-sm">
+                <div class="text-4xl font-bold text-white mb-2 glow-text">10x</div>
+                <div class="text-sm text-zinc-400">Faster Execution</div>
+              </div>
+              <div class="flex flex-col items-center p-6 rounded-2xl glass-card backdrop-blur-sm">
+                <div class="text-4xl font-bold text-white mb-2 glow-text">100%</div>
+                <div class="text-sm text-zinc-400">Game Compatible</div>
+              </div>
+              <div class="flex flex-col items-center p-6 rounded-2xl glass-card backdrop-blur-sm">
+                <div class="text-4xl font-bold text-white mb-2 glow-text">∞</div>
+                <div class="text-sm text-zinc-400">Possibilities</div>
+              </div>
+            </div>
+            
+            <div class="w-full max-w-md h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent mb-8"></div>
+            
+            <div class="flex justify-center">
+              <button id="scrollButton" class="button ghost-button rounded-full text-zinc-400 hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 mr-2">
+                  <path d="M12 5v14"></path>
+                  <path d="m19 12-7 7-7-7"></path>
+                </svg>
+                Scroll to Explore
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-24 relative overflow-hidden">
+      <div class="absolute inset-0 pattern-dots opacity-50"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-emerald-600/10 blur-3xl"></div>
+      
+      <div class="container relative">
+        <div class="fade-in-section">
+          <div class="flex flex-col items-center text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-8 text-gradient-white">
+              Redefining Script <span class="text-gradient">Execution</span>
+            </h2>
+            <p class="max-w-2xl text-lg md:text-xl text-zinc-400 mb-12">
+              Experience unparalleled power and precision with Visual's revolutionary Roblox executor. Instant
+              execution, unlimited possibilities, and a seamless experience.
+            </p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-4xl">
+              <div class="flex flex-col items-center glass-card p-6">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-emerald-500/10 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-emerald-400">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <div class="text-3xl font-bold text-white mb-1 glow-text">0ms</div>
+                <div class="text-sm text-zinc-500">Execution Time</div>
+              </div>
+              <div class="flex flex-col items-center glass-card p-6">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-teal-500/10 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-teal-400">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <div class="text-3xl font-bold text-white mb-1 glow-text">156K+</div>
+                <div class="text-sm text-zinc-500">Active Users</div>
+              </div>
+              <div class="flex flex-col items-center glass-card p-6">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-green-500/10 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-green-400">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                  </svg>
+                </div>
+                <div class="text-3xl font-bold text-white mb-1 glow-text">98.7%</div>
+                <div class="text-sm text-zinc-500">Success Rate</div>
+              </div>
+              <div class="flex flex-col items-center glass-card p-6">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-emerald-500/10 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-emerald-400">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                </div>
+                <div class="text-3xl font-bold text-white mb-1 glow-text">24/7</div>
+                <div class="text-sm text-zinc-500">Support</div>
+              </div>
+            </div>
+
+            <!-- Progress circles -->
+            <div class="grid grid-cols-2 gap-16 mt-16 max-w-lg w-full">
+              <div class="glass-card p-6 rounded-2xl">
+                <div class="circular-progress" data-percentage="100" data-label="sUnc"></div>
+              </div>
+              <div class="glass-card p-6 rounded-2xl">
+                <div class="circular-progress" data-percentage="99" data-label="Unc"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Code Preview Section -->
+    <section class="py-24 relative">
+      <div class="absolute inset-0 hexagon-bg opacity-30"></div>
+      <div class="container relative">
+        <div class="fade-in-section">
+          <div class="flex flex-col lg:flex-row gap-16 items-center">
+            <div class="w-full lg:w-1/2">
+              <div class="inline-flex items-center px-3 py-1 mb-6 rounded-full glass-effect">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-2 text-emerald-400">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                <span class="text-xs font-medium text-zinc-300">Advanced Scripting</span>
+              </div>
+              <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient-white">
+                Powerful Script <span class="text-gradient">Execution</span>
+              </h2>
+              <p class="text-zinc-400 mb-8 text-lg">
+                Visual delivers unmatched performance with our proprietary execution engine. Run complex scripts with
+                zero latency and full compatibility across all Roblox games.
+              </p>
+
+              <div class="tabs">
+                <div class="tabs-list glass-effect rounded-xl p-1 mb-2">
+                  <button class="tab-trigger active" data-tab="basic">Basic</button>
+                  <button class="tab-trigger" data-tab="advanced">Advanced</button>
+                  <button class="tab-trigger" data-tab="expert">Expert</button>
+                </div>
+                <div class="tab-content active" data-tab="basic">
+                  <div class="glass-card p-6">
+                    <h3 class="text-xl font-medium mb-3 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 mr-2 text-emerald-400">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                      Simple Execution
+                    </h3>
+                    <p class="text-zinc-400 text-sm mb-4">
+                      Perfect for beginners, execute scripts with a single click. Our intuitive interface makes it
+                      easy to get started.
+                    </p>
+                    <button class="button emerald-button w-full">
+                      Learn More
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 ml-1">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="tab-content" data-tab="advanced">
+                  <div class="glass-card p-6">
+                    <h3 class="text-xl font-medium mb-3 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 mr-2 text-teal-400">
+                        <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                        <rect x="9" y="9" width="6" height="6"></rect>
+                        <line x1="9" y1="1" x2="9" y2="4"></line>
+                        <line x1="15" y1="1" x2="15" y2="4"></line>
+                        <line x1="9" y1="20" x2="9" y2="23"></line>
+                        <line x1="15" y1="20" x2="15" y2="23"></line>
+                        <line x1="20" y1="9" x2="23" y2="9"></line>
+                        <line x1="20" y1="14" x2="23" y2="14"></line>
+                        <line x1="1" y1="9" x2="4" y2="9"></line>
+                        <line x1="1" y1="14" x2="4" y2="14"></line>
+                      </svg>
+                      Advanced Features
+                    </h3>
+                    <p class="text-zinc-400 text-sm mb-4">
+                      Unlock powerful debugging and script management tools. Perfect for experienced users who need
+                      more control.
+                    </p>
+                    <button class="button teal-button w-full">
+                      Explore Features
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 ml-1">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="tab-content" data-tab="expert">
+                  <div class="glass-card p-6">
+                    <h3 class="text-xl font-medium mb-3 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 mr-2 text-blue-400">
+                        <path d="M22 2L11 13"></path>
+                        <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
+                      </svg>
+                      Expert Mode
+                    </h3>
+                    <p class="text-zinc-400 text-sm mb-4">
+                      Full access to our API and custom module development. Build your own tools and extensions.
+                    </p>
+                    <button class="button blue-button w-full">
+                      View Documentation
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 ml-1">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-full lg:w-1/2">
+              <div class="relative">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl blur opacity-30"></div>
+                <div class="code-window">
+                  <div class="code-window-header">
+                    <div class="code-window-dot bg-red-500"></div>
+                    <div class="code-window-dot bg-yellow-500"></div>
+                    <div class="code-window-dot bg-green-500"></div>
+                    <div class="ml-2 text-xs font-mono text-zinc-400">main.lua</div>
+                  </div>
+                  <pre class="code-window-content">
+<span class="code-comment">-- Initialize Visual</span>
+<span class="code-variable">local visual = </span><span class="code-function">require</span><span class="code-punctuation">(</span><span class="code-string">"visual"</span><span class="code-punctuation">)</span>
+
+<span class="code-comment">-- Configure settings</span>
+<span class="code-variable">visual</span><span class="code-punctuation">.</span><span class="code-function">config</span><span class="code-punctuation">({</span>
+<span class="code-property">    bypass</span> <span class="code-punctuation">=</span> <span class="code-string">"quantum"</span><span class="code-punctuation">,</span>
+<span class="code-property">    autoExecute</span> <span class="code-punctuation">=</span> <span class="code-keyword">true</span><span class="code-punctuation">,</span>
+<span class="code-property">    debugMode</span> <span class="code-punctuation">=</span> <span class="code-keyword">false</span>
+<span class="code-punctuation">})</span>
+
+<span class="code-comment">-- Load script from file or URL</span>
+<span class="code-variable">local script</span> <span class="code-punctuation">=</span> <span class="code-variable">visual</span><span class="code-punctuation">.</span><span class="code-function">loadScript</span><span class="code-punctuation">(</span><span class="code-string">"https://example.com/script.lua"</span><span class="code-punctuation">)</span>
+
+<span class="code-comment">-- Execute script with advanced options</span>
+<span class="code-variable">local success, result</span> <span class="code-punctuation">=</span> <span class="code-variable">visual</span><span class="code-punctuation">:</span><span class="code-function">execute</span><span class="code-punctuation">(</span><span class="code-variable">script</span><span class="code-punctuation">,</span> <span class="code-punctuation">{</span>
+<span class="code-property">    silent</span> <span class="code-punctuation">=</span> <span class="code-keyword">true</span><span class="code-punctuation">,</span>
+<span class="code-property">    timeout</span> <span class="code-punctuation">=</span> <span class="code-number">5000</span><span class="code-punctuation">,</span>
+<span class="code-property">    environment</span> <span class="code-punctuation">=</span> <span class="code-string">"protected"</span>
+<span class="code-punctuation">})</span>
+
+<span class="code-comment">-- Handle execution result</span>
+<span class="code-keyword">if</span> <span class="code-variable">success</span> <span class="code-keyword">then</span>
+<span class="code-variable">    visual</span><span class="code-punctuation">.</span><span class="code-function">notify</span><span class="code-punctuation">(</span><span class="code-string">"Script executed successfully!"</span><span class="code-punctuation">)</span>
+<span class="code-keyword">    return</span> <span class="code-variable">result</span>
+<span class="code-keyword">else</span>
+<span class="code-variable">    visual</span><span class="code-punctuation">.</span><span class="code-function">error</span><span class="code-punctuation">(</span><span class="code-string">"Execution failed: "</span> <span class="code-punctuation">..</span> <span class="code-variable">result</span><span class="code-punctuation">)</span>
+<span class="code-keyword">end</span></pre>
+                </div>
+                
+                <div class="mt-4 glass-effect p-3 rounded-lg">
+                  <div class="flex items-center">
+                    <div class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></div>
+                    <div class="text-xs font-mono text-zinc-400">
+                      Execution successful - 0ms - Memory usage: 2.4MB
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 relative">
+      <div class="absolute inset-0 pattern-grid opacity-30"></div>
+      <div class="container relative">
+        <div class="fade-in-section">
+          <div class="text-center mb-16">
+            <div class="inline-flex items-center px-3 py-1 mb-6 rounded-full glass-effect">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-2 text-emerald-400">
+                <path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5-.3.3-.5.7-.5 1.1v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8c.4 0 .8-.2 1.1-.5.3-.3.5-.7.5-1.1V6.5L15.5 2z"></path>
+                <path d="M3 7.6v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8"></path>
+                <path d="M15 2v5h5"></path>
+              </svg>
+              <span class="text-xs font-medium text-zinc-300">What Sets Us Apart</span>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient-white">
+              Cutting-Edge <span class="text-gradient">Features</span>
+            </h2>
+            <p class="text-zinc-400 max-w-2xl mx-auto text-lg">
+              Visual combines powerful technology with an intuitive interface to deliver the ultimate script execution
+              experience.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="fade-in-section" style="transition-delay: 0ms;">
+              <div class="glass-card p-8 h-full hover:border-emerald-500/30 transition-all duration-300 group">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-black to-zinc-900 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-emerald-400">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 group-hover:text-gradient transition-all duration-300">Instant Execution</h3>
+                <p class="text-zinc-400">Execute scripts with zero latency, providing immediate results without any delay.</p>
+              </div>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="fade-in-section" style="transition-delay: 100ms;">
+              <div class="glass-card p-8 h-full hover:border-emerald-500/30 transition-all duration-300 group">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-black to-zinc-900 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-teal-400">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 group-hover:text-gradient transition-all duration-300">Undetectable Bypass</h3>
+                <p class="text-zinc-400">Our proprietary bypass technology ensures you remain undetected while executing scripts.</p>
+              </div>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="fade-in-section" style="transition-delay: 200ms;">
+              <div class="glass-card p-8 h-full hover:border-emerald-500/30 transition-all duration-300 group">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-black to-zinc-900 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-green-400">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 group-hover:text-gradient transition-all duration-300">Script Library</h3>
+                <p class="text-zinc-400">Access our extensive library of pre-made scripts for all popular Roblox games.</p>
+              </div>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="fade-in-section" style="transition-delay: 300ms;">
+              <div class="glass-card p-8 h-full hover:border-emerald-500/30 transition-all duration-300 group">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-black to-zinc-900 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-emerald-400">
+                    <path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5-.3.3-.5.7-.5 1.1v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8c.4 0 .8-.2 1.1-.5.3-.3.5-.7.5-1.1V6.5L15.5 2z"></path>
+                    <path d="M3 7.6v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8"></path>
+                    <path d="M15 2v5h5"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 group-hover:text-gradient transition-all duration-300">Auto-Update</h3>
+                <p class="text-zinc-400">Never worry about outdated software with our automatic update system.</p>
+              </div>
+            </div>
+            
+            <!-- Feature 5 -->
+            <div class="fade-in-section" style="transition-delay: 400ms;">
+              <div class="glass-card p-8 h-full hover:border-emerald-500/30 transition-all duration-300 group">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-black to-zinc-900 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-teal-400">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 group-hover:text-gradient transition-all duration-300">Community Hub</h3>
+                <p class="text-zinc-400">Connect with other users, share scripts, and get help from our active community.</p>
+              </div>
+            </div>
+            
+            <!-- Feature 6 -->
+            <div class="fade-in-section" style="transition-delay: 500ms;">
+              <div class="glass-card p-8 h-full hover:border-emerald-500/30 transition-all duration-300 group">
+                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-black to-zinc-900 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-green-400">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 group-hover:text-gradient transition-all duration-300">24/7 Support</h3>
+                <p class="text-zinc-400">Our dedicated support team is available around the clock to assist with any issues.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Feature comparison -->
+          <div class="mt-24">
+            <div class="text-center mb-12">
+              <h3 class="text-3xl font-bold mb-4 text-gradient-white">
+                How We <span class="text-gradient">Compare</span>
+              </h3>
+              <p class="text-zinc-400 max-w-2xl mx-auto">
+                See how Visual stacks up against other executors in the market.
+              </p>
+            </div>
+            
+            <div class="glass-card overflow-hidden rounded-xl">
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead>
+                    <tr class="border-b border-zinc-800">
+                      <th class="p-4 text-left text-zinc-400 font-medium">Features</th>
+                      <th class="p-4 text-center bg-emerald-500/10">
+                        <div class="font-bold text-emerald-400">Visual</div>
+                        <div class="text-xs text-zinc-500">Premium</div>
+                      </th>
+                      <th class="p-4 text-center">
+                        <div class="font-medium text-zinc-300">Competitor A</div>
+                        <div class="text-xs text-zinc-500">Basic</div>
+                      </th>
+                      <th class="p-4 text-center">
+                        <div class="font-medium text-zinc-300">Competitor B</div>
+                        <div class="text-xs text-zinc-500">Pro</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-b border-zinc-800/50">
+                      <td class="p-4 text-zinc-300">Execution Speed</td>
+                      <td class="p-4 text-center bg-emerald-500/5">
+                        <div class="flex justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-emerald-400">
+                            <path d="m17 12 3 1v-2l-3-1"></path>
+                            <path d="M4 6v12c0 1 1 2 2 2h12c1 0 2-1 2-2V9"></path>
+                            <path d="M4 10h4"></path>
+                            <path d="M4 14h4"></path>
+                            <path d="M10 6h8c1 0 2 1 2 2v1"></path>
+                            <path d="M14 14c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1s-1 .4-1 1v1c0 .6.4 1 1 1z"></path>
+                          </svg>
+                          <span class="ml-1 text-sm">0ms</span>
+                        </div>
+                      </td>
+                      <td class="p-4 text-center">
+                        <div class="flex justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-400">
+                            <path d="m17 12 3 1v-2l-3-1"></path>
+                            <path d="M4 6v12c0 1 1 2 2 2h12c1 0 2-1 2-2V9"></path>
+                            <path d="M4 10h4"></path>
+                            <path d="M4 14h4"></path>
+                            <path d="M10 6h8c1 0 2 1 2 2v1"></path>
+                            <path d="M14 14c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1s-1 .4-1 1v1c0 .6.4 1 1 1z"></path>
+                          </svg>
+                          <span class="ml-1 text-sm">50ms</span>
+                        </div>
+                      </td>
+                      <td class="p-4 text-center">
+                        <div class="flex justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-400">
+                            <path d="m17 12 3 1v-2l-3-1"></path>
+                            <path d="M4 6v12c0 1 1 2 2 2h12c1 0 2-1 2-2V9"></path>
+                            <path d="M4 10h4"></path>
+                            <path d="M4 14h4"></path>
+                            <path d="M10 6h8c1 0 2 1 2 2v1"></path>
+                            <path d="M14 14c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1s-1 .4-1 1v1c0 .6.4 1 1 1z"></path>
+                          </svg>
+                          <span class="ml-1 text-sm">20ms</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="border-b border-zinc-800/50">
+                      <td class="p-4 text-zinc-300">Game Compatibility</td>
+                      <td class="p-4 text-center bg-emerald-500/5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-emerald-400 mx-auto">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </td>
+                      <td class="p-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-400 mx-auto">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </td>
+                      <td class="p-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-400 mx-auto">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </td>
+                    </tr>
+                    <tr class="border-b border-zinc-800/50">
+                      <td class="p-4 text-zinc-300">Undetectable Bypass</td>
+                      <td class="p-4 text-center bg-emerald-500/5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-emerald-400 mx-auto">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </td>
+                      <td class="p-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-600 mx-auto">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </td>
+                      <td class="p-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-400 mx-auto">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </td>
+                    </tr>
+                    <tr class="border-b border-zinc-800/50">
+                      <td class="p-4 text-zinc-300">Script Library</td>
+                      <td class="p-4 text-center bg-emerald-500/5">
+                        <div class="flex justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-emerald-400">
+                            <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"></path>
+                            <line x1="8" y1="16" x2="8.01" y2="16"></line>
+                            <line x1="8" y1="20" x2="8.01" y2="20"></line>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                            <line x1="12" y1="22" x2="12.01" y2="22"></line>
+                            <line x1="16" y1="16" x2="16.01" y2="16"></line>
+                            <line x1="16" y1="20" x2="16.01" y2="20"></line>
+                          </svg>
+                          <span class="ml-1 text-sm">10,000+</span>
+                        </div>
+                      </td>
+                      <td class="p-4 text-center">
+                        <div class="flex justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-400">
+                            <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"></path>
+                            <line x1="8" y1="16" x2="8.01" y2="16"></line>
+                            <line x1="8" y1="20" x2="8.01" y2="20"></line>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                            <line x1="12" y1="22" x2="12.01" y2="22"></line>
+                            <line x1="16" y1="16" x2="16.01" y2="16"></line>
+                            <line x1="16" y1="20" x2="16.01" y2="20"></line>
+                          </svg>
+                          <span class="ml-1 text-sm">1,000+</span>
+                        </div>
+                      </td>
+                      <td class="p-4 text-center">
+                        <div class="flex justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-400">
+                            <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"></path>
+                            <line x1="8" y1="16" x2="8.01" y2="16"></line>
+                            <line x1="8" y1="20" x2="8.01" y2="20"></line>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                            <line x1="12" y1="22" x2="12.01" y2="22"></line>
+                            <line x1="16" y1="16" x2="16.01" y2="16"></line>
+                            <line x1="16" y1="20" x2="16.01" y2="20"></line>
+                          </svg>
+                          <span class="ml-1 text-sm">5,000+</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="border-b border-zinc-800/50">
+                      <td class="p-4 text-zinc-300">Auto-Update</td>
+                      <td class="p-4 text-center bg-emerald-500/5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-emerald-400 mx-auto">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </td>
+                      <td class="p-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-600 mx-auto">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </td>
+                      <td class="p-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-400 mx-auto">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="p-4 text-zinc-300">24/7 Support</td>
+                      <td class="p-4 text-center bg-emerald-500/5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-emerald-400 mx-auto">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </td>
+                      <td class="p-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-600 mx-auto">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </td>
+                      <td class="p-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-zinc-600 mx-auto">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Payment Section -->
+    <section class="py-24 relative">
+      <div class="absolute inset-0 bg-gradient-to-b from-zinc-950 to-black"></div>
+      <div class="container relative">
+        <div class="fade-in-section">
+          <div class="glass-card p-12 rounded-3xl border-emerald-500/20 overflow-hidden relative">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl -ml-32 -mb-32"></div>
+            
+            <div class="text-center relative z-10">
+              <div class="inline-flex items-center px-3 py-1 mb-6 rounded-full glass-effect">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-2 text-yellow-400">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span class="text-xs font-medium text-zinc-300">Unbelievable Value</span>
+              </div>
+              <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient-white">Payment</h2>
+              <p class="text-zinc-400 max-w-2xl mx-auto text-xl mb-12">
+                Payment? What payment? Visual is completely free!
+              </p>
+              <div class="mb-12 text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 glow-text">
+                <span id="currency-display">0$</span>
+              </div>
+              
+              <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="data:text/plain;charset=utf-8,# Visual Script Executor%0A%0AThank you for downloading Visual, the next generation script execution platform for Roblox!%0A%0A## Features%0A%0A- Instant execution (0ms)%0A- 100% game compatibility%0A- Undetectable bypass technology%0A- Extensive script library (10,000+ scripts)%0A- Auto-update system%0A- 24/7 support%0A%0A## Getting Started%0A%0A1. Extract the contents of this package%0A2. Run Visual.exe as administrator%0A3. Select a script from our library or paste your own%0A4. Click %22Execute%22 to run your script instantly%0A%0A## Support%0A%0AJoin our Discord community: https://discord.gg/zZ8vjEfEzm%0A%0A## Legal Notice%0A%0AThis software is for educational purposes only. The developers are not responsible for any misuse of this software.%0A%0A© 2023 Visual. All rights reserved." download="visual-executor.txt" class="button primary-gradient-button gap-2 rounded-full px-8 py-6 text-lg shadow-lg shadow-emerald-900/20">
+                  Download Now
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </a>
+                <button class="button outline-button gap-2 bg-white/5 hover:bg-white/10 border-white/10 rounded-full px-8 py-6 text-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  Join Discord
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24">
+      <div class="container">
+        <div class="fade-in-section">
+          <div class="relative overflow-hidden rounded-3xl animated-gradient">
+            <div class="absolute inset-0 pattern-dots opacity-20"></div>
+            <div class="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))]"></div>
+            <div class="relative flex flex-col lg:flex-row items-center justify-between gap-8 p-12 lg:p-16">
+              <div class="max-w-2xl">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 text-white">Ready to Transform Your Experience?</h2>
+                <p class="text-indigo-100 mb-0 lg:mb-6 text-lg">
+                  Join over 100,000 users who have already elevated their Roblox gameplay with Visual's powerful
+                  script executor.
+                </p>
+              </div>
+              <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                <a href="data:text/plain;charset=utf-8,# Visual Script Executor%0A%0AThank you for downloading Visual, the next generation script execution platform for Roblox!%0A%0A## Features%0A%0A- Instant execution (0ms)%0A- 100% game compatibility%0A- Undetectable bypass technology%0A- Extensive script library (10,000+ scripts)%0A- Auto-update system%0A- 24/7 support%0A%0A## Getting Started%0A%0A1. Extract the contents of this package%0A2. Run Visual.exe as administrator%0A3. Select a script from our library or paste your own%0A4. Click %22Execute%22 to run your script instantly%0A%0A## Support%0A%0AJoin our Discord community: https://discord.gg/zZ8vjEfEzm%0A%0A## Legal Notice%0A%0AThis software is for educational purposes only. The developers are not responsible for any misuse of this software.%0A%0A© 2023 Visual. All rights reserved." download="visual-executor.txt" class="button white-button rounded-full px-8 py-6 text-lg">
+                  Download Now
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 ml-2">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </a>
+                <button class="button outline-light-button rounded-full px-8 py-6 text-lg">
+                  View Documentation
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- YouTube Showcase Section -->
+    <section id="showcase" class="py-24 bg-zinc-950/50 relative">
+      <div class="absolute inset-0 pattern-grid opacity-30"></div>
+      <div class="container relative">
+        <div class="fade-in-section">
+          <div class="text-center mb-16">
+            <div class="inline-flex items-center px-3 py-1 mb-6 rounded-full glass-effect">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-2 text-emerald-400">
+                <path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5-.3.3-.5.7-.5 1.1v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8c.4 0 .8-.2 1.1-.5.3-.3.5-.7.5-1.1V6.5L15.5 2z"></path>
+                <path d="M3 7.6v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8"></path>
+                <path d="M15 2v5h5"></path>
+              </svg>
+              <span class="text-xs font-medium text-zinc-300">See It In Action</span>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient-white">Showcase</h2>
+            <p class="text-zinc-400 max-w-2xl mx-auto text-lg">
+              Watch Visual in action and discover the power of our script execution platform.
+            </p>
+          </div>
+
+          <div class="max-w-4xl mx-auto">
+            <a
+              href="https://youtu.be/0A_ZbNyHMWI"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block relative rounded-2xl overflow-hidden group"
+            >
+              <div class="aspect-video bg-zinc-900 relative overflow-hidden">
+                <!-- YouTube thumbnail -->
+                <img
+                  src="https://img.youtube.com/vi/0A_ZbNyHMWI/maxresdefault.jpg"
+                  alt="Visual Showcase Video"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+
+                <!-- Play button overlay -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-24 h-24 rounded-full bg-emerald-500/90 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-lg shadow-emerald-900/30">
+                    <div class="text-white text-5xl group-hover:text-6xl transition-all duration-300">▶</div>
+                  </div>
+                </div>
+
+                <!-- Gradient overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+              </div>
+
+              <div class="absolute bottom-0 left-0 right-0 p-8 text-left">
+                <h3 class="text-2xl md:text-3xl font-bold text-white mb-3">Visual Script Executor Showcase</h3>
+                <p class="text-zinc-300 flex items-center text-lg">
+                  <span class="text-red-500 mr-2">▶</span>
+                  Watch on YouTube
+                </p>
+              </div>
+            </a>
+
+            <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+              <a
+                href="https://www.youtube.com/watch?v=ebPMXUxTEBM"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="aspect-video rounded-lg overflow-hidden relative group cursor-pointer glass-card"
+              >
+                <img
+                  src="https://img.youtube.com/vi/ebPMXUxTEBM/mqdefault.jpg"
+                  alt="Tutorial 1"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-10 h-10 rounded-full bg-emerald-500/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="text-white text-lg">▶</div>
+                  </div>
+                </div>
+                <div class="absolute bottom-2 left-2 right-2 text-xs font-medium text-white">Tutorial 1</div>
+              </a>
+              <a
+                href="https://www.youtube.com/watch?v=Wr5DntX0OZM"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="aspect-video rounded-lg overflow-hidden relative group cursor-pointer glass-card"
+              >
+                <img
+                  src="https://img.youtube.com/vi/Wr5DntX0OZM/mqdefault.jpg"
+                  alt="Tutorial 2"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-10 h-10 rounded-full bg-emerald-500/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="text-white text-lg">▶</div>
+                  </div>
+                </div>
+                <div class="absolute bottom-2 left-2 right-2 text-xs font-medium text-white">Tutorial 2</div>
+              </a>
+              <a
+                href="https://www.youtube.com/watch?v=LD41rkZmQYE"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="aspect-video rounded-lg overflow-hidden relative group cursor-pointer glass-card"
+              >
+                <img
+                  src="https://img.youtube.com/vi/LD41rkZmQYE/mqdefault.jpg"
+                  alt="Tutorial 3"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-10 h-10 rounded-full bg-emerald-500/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="text-white text-lg">▶</div>
+                  </div>
+                </div>
+                <div class="absolute bottom-2 left-2 right-2 text-xs font-medium text-white">Tutorial 3</div>
+              </a>
+              <a
+                href="https://www.youtube.com/watch?v=xZY5V867-_4"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="aspect-video rounded-lg overflow-hidden relative group cursor-pointer glass-card"
+              >
+                <img
+                  src="https://img.youtube.com/vi/xZY5V867-_4/mqdefault.jpg"
+                  alt="Tutorial 4"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-10 h-10 rounded-full bg-emerald-500/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="text-white text-lg">▶</div>
+                  </div>
+                </div>
+                <div class="absolute bottom-2 left-2 right-2 text-xs font-medium text-white">Tutorial 4</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 border-t border-zinc-800 bg-black relative">
+      <div class="noise-bg opacity-10"></div>
+      <div class="container relative">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+          <div>
+            <a href="/" class="flex items-center gap-2 mb-6">
+              <div class="relative h-10 w-10">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 blur-sm opacity-70"></div>
+                <div class="absolute inset-0.5 rounded-full bg-black"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute inset-0 h-10 w-10 text-emerald-400 p-2">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+              <span class="font-bold text-2xl tracking-tight">VISUAL</span>
+            </a>
+            <p class="text-zinc-400 text-sm mb-6">
+              Next generation script execution for Roblox, delivering unmatched performance and reliability.
+            </p>
+            <div class="flex gap-4">
+              <a href="#" class="text-zinc-500 hover:text-white transition-colors">
+                <span class="sr-only">Instagram</span>
+                <div class="w-5 h-5">IG</div>
+              </a>
+              <a href="#" class="text-zinc-500 hover:text-white transition-colors">
+                <span class="sr-only">Twitter</span>
+                <div class="w-5 h-5">TW</div>
+              </a>
+              <a href="#" class="text-zinc-500 hover:text-white transition-colors">
+                <span class="sr-only">GitHub</span>
+                <div class="w-5 h-5">GH</div>
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-medium text-lg mb-6">Product</h3>
+            <ul class="space-y-4">
+              <li>
+                <a href="#" class="text-zinc-400 hover:text-white text-sm transition-colors">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-zinc-400 hover:text-white text-sm transition-colors">
+                  Download
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-zinc-400 hover:text-white text-sm transition-colors">
+                  Updates
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-medium text-lg mb-6">Resources</h3>
+            <ul class="space-y-4">
+              <li>
+                <a href="#" class="text-zinc-400 hover:text-white text-sm transition-colors">
+                  Documentation
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-zinc-400 hover:text-white text-sm transition-colors">
+                  Tutorials
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-zinc-400 hover:text-white text-sm transition-colors">
+                  Script Library
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-zinc-400 hover:text-white text-sm transition-colors">
+                  Community
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-medium text-lg mb-6">Community</h3>
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="https://discord.gg/zZ8vjEfEzm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-zinc-400 hover:text-white text-sm flex items-center gap-2 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  Discord
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-zinc-400 hover:text-white text-sm transition-colors">
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-zinc-400 hover:text-white text-sm transition-colors">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="border-t border-zinc-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p class="text-zinc-500 text-sm mb-4 md:mb-0">© 2023 Visual. All rights reserved.</p>
+          <div class="flex gap-6">
+            <a href="#" class="text-zinc-500 hover:text-white text-sm transition-colors">
+              Privacy Policy
+            </a>
+            <a href="#" class="text-zinc-500 hover:text-white text-sm transition-colors">
+              Terms of Service
+            </a>
+            <a href="#" class="text-zinc-500 hover:text-white text-sm transition-colors">
+              Cookie Policy
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Circular progress component
+    document.addEventListener('DOMContentLoaded', function() {
+      const circularProgressElements = document.querySelectorAll('.circular-progress');
+      
+      circularProgressElements.forEach(element => {
+        const percentage = element.getAttribute('data-percentage');
+        const label = element.getAttribute('data-label');
+        const radius = 40;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference - (percentage / 100) * circumference;
+        
+        element.innerHTML = `
+          <div class="flex flex-col items-center">
+            <div class="relative w-24 h-24">
+              <svg class="w-full h-full" viewBox="0 0 100 100">
+                <circle
+                  class="text-zinc-800"
+                  stroke-width="8"
+                  stroke="currentColor"
+                  fill="transparent"
+                  r="${radius}"
+                  cx="50"
+                  cy="50"
+                />
+                <circle
+                  class="text-emerald-500"
+                  stroke-width="8"
+                  stroke-dasharray="${circumference}"
+                  stroke-dashoffset="${offset}"
+                  stroke-linecap="round"
+                  stroke="currentColor"
+                  fill="transparent"
+                  r="${radius}"
+                  cx="50"
+                  cy="50"
+                  style="transition: stroke-dashoffset 0.5s ease; transform: rotate(-90deg); transform-origin: 50% 50%;"
+                />
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center text-xl font-bold">${percentage}%</div>
+            </div>
+            <div class="mt-2 text-sm font-medium">${label}</div>
+          </div>
+        `;
+      });
+    });
+
+    // Currency cycling
+    document.addEventListener('DOMContentLoaded', function() {
+      const currencyDisplay = document.getElementById('currency-display');
+      const currencies = ["$", "€", "£"];
+      let currencyIndex = 0;
+      
+      setInterval(() => {
+        currencyIndex = (currencyIndex + 1) % currencies.length;
+        currencyDisplay.textContent = `0${currencies[currencyIndex]}`;
+      }, 1000);
+    });
+
+    // Tabs functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabTriggers = document.querySelectorAll('.tab-trigger');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabTriggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const tabName = trigger.getAttribute('data-tab');
+          
+          // Hide all tab contents
+          tabContents.forEach(content => {
+            content.classList.remove('active');
+          });
+          
+          // Deactivate all triggers
+          tabTriggers.forEach(t => {
+            t.classList.remove('active');
+          });
+          
+          // Activate the clicked tab
+          trigger.classList.add('active');
+          document.querySelector(`.tab-content[data-tab="${tabName}"]`).classList.add('active');
+        });
+      });
+    });
+
+    // Scroll button functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const scrollButton = document.getElementById('scrollButton');
+      
+      scrollButton.addEventListener('click', () => {
+        window.scrollTo({
+          top: window.innerHeight,
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Intersection Observer for fade-in sections
+    document.addEventListener('DOMContentLoaded', function() {
+      const fadeInSections = document.querySelectorAll('.fade-in-section');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
